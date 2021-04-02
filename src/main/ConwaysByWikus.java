@@ -40,7 +40,7 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
     public boolean liveCellWithTwoOrThreeLiveNeighboursLives(Point point) {
         if (!isAlive(point)) return false;
         int liveNeighbours = countLiveNeighbours(point, 4);
-        return 2 <= liveNeighbours && liveNeighbours <= 3;
+        return liveNeighbours == 2 || liveNeighbours == 3;
     }
 
     // Returns true if the given cell is alive and has more than three live neighbours
