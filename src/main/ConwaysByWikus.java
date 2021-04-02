@@ -31,6 +31,18 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
 
     // Returns true if the given cell is alive and has fewer than two live neighbours
     public boolean liveCellWithFewerThanTwoLiveNeighboursDies(Point point) {
+        if (!isAlive(point)) return false;
+        int[] neighbourhood = getNeighbourhood(point);
+        int liveNeighbours = 0;
+        for (int row = neighbourhood[0]; row <= neighbourhood[1]; row++) {
+            for (int col = neighbourhood[2]; col <= neighbourhood[3]; col++) {
+                Point neighbour = new Point(row, col);
+                if (!neighbour.equals(point) && isAlive(neighbour)) {
+                    liveNeighbours++;
+                    if (liveNeighbours >= 2) return false;
+                }
+            }
+        }
         return true;
     }
 
@@ -47,5 +59,18 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
     // Returns true if the given cell is dead and has exactly three live neighbours
     public boolean deadCellWithExactlyThreeLiveNeighboursBecomesAlive(Point point) {
         return true;
+    }
+
+    private boolean isAlive(Point point) {
+        return currentGrid[point.x][point.y];
+    }
+
+    // Returns an array specifying the boundaries of the given point's neighbourhood
+    private int[] getNeighbourhood(Point point) {
+        int xMin = Math.max(0, point.x - 1);
+        int yMin = Math.max(0, point.y - 1);
+        int xMax = Math.min(NUM_ROWS - 1, point.x + 1);
+        int yMax = Math.min(NUM_COLUMNS - 1, point.y + 1);
+        return new int[] {xMin, xMax, yMin, yMax};
     }
 }
