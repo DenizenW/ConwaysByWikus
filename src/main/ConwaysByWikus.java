@@ -32,69 +32,45 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
     // Returns true if the given cell is alive and has fewer than two live neighbours
     public boolean liveCellWithFewerThanTwoLiveNeighboursDies(Point point) {
         if (!isAlive(point)) return false;
-        int[] neighbourhood = getNeighbourhood(point);
-        int liveNeighbours = 0;
-        for (int row = neighbourhood[0]; row <= neighbourhood[1]; row++) {
-            for (int col = neighbourhood[2]; col <= neighbourhood[3]; col++) {
-                Point neighbour = new Point(row, col);
-                if (!neighbour.equals(point) && isAlive(neighbour)) {
-                    liveNeighbours++;
-                    if (liveNeighbours >= 2) return false;
-                }
-            }
-        }
-        return true;
+        int liveNeighbours = countLiveNeighbours(point, 2);
+        return liveNeighbours < 2;
     }
 
     // Returns true if the given cell is alive and has two or three live neighbours
     public boolean liveCellWithTwoOrThreeLiveNeighboursLives(Point point) {
         if (!isAlive(point)) return false;
-        int[] neighbourhood = getNeighbourhood(point);
-        int liveNeighbours = 0;
-        for (int row = neighbourhood[0]; row <= neighbourhood[1]; row++) {
-            for (int col = neighbourhood[2]; col <= neighbourhood[3]; col++) {
-                Point neighbour = new Point(row, col);
-                if (!neighbour.equals(point) && isAlive(neighbour)) {
-                    liveNeighbours++;
-                    if (liveNeighbours > 3) return false;
-                }
-            }
-        }
-        return liveNeighbours >= 2;
+        int liveNeighbours = countLiveNeighbours(point, 4);
+        return 2 <= liveNeighbours && liveNeighbours <= 3;
     }
 
     // Returns true if the given cell is alive and has more than three live neighbours
     public boolean liveCellWithMoreThanThreeLiveNeighboursDies(Point point) {
         if (!isAlive(point)) return false;
-        int[] neighbourhood = getNeighbourhood(point);
-        int liveNeighbours = 0;
-        for (int row = neighbourhood[0]; row <= neighbourhood[1]; row++) {
-            for (int col = neighbourhood[2]; col <= neighbourhood[3]; col++) {
-                Point neighbour = new Point(row, col);
-                if (!neighbour.equals(point) && isAlive(neighbour)) {
-                    liveNeighbours++;
-                    if (liveNeighbours > 3) return true;
-                }
-            }
-        }
-        return false;
+        int liveNeighbours = countLiveNeighbours(point, 4);
+        return liveNeighbours > 3;
     }
 
     // Returns true if the given cell is dead and has exactly three live neighbours
     public boolean deadCellWithExactlyThreeLiveNeighboursBecomesAlive(Point point) {
         if (isAlive(point)) return false;
-        int[] neighbourhood = getNeighbourhood(point);
+        int liveNeighbours = countLiveNeighbours(point, 4);
+        return liveNeighbours == 3;
+    }
+
+    // Returns the number of live neighbours for the given point, or cutoff if cutoff is reached
+    private int countLiveNeighbours(Point point, int cutoff) {
         int liveNeighbours = 0;
+        int[] neighbourhood = getNeighbourhood(point);
         for (int row = neighbourhood[0]; row <= neighbourhood[1]; row++) {
             for (int col = neighbourhood[2]; col <= neighbourhood[3]; col++) {
                 Point neighbour = new Point(row, col);
                 if (!neighbour.equals(point) && isAlive(neighbour)) {
                     liveNeighbours++;
-                    if (liveNeighbours > 3) return false;
+                    if (liveNeighbours >= cutoff) return cutoff;
                 }
             }
         }
-        return liveNeighbours == 3;
+        return liveNeighbours;
     }
 
     private boolean isAlive(Point point) {
