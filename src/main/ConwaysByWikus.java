@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class ConwaysByWikus implements ConwaysGameOfLife {
 
@@ -15,6 +16,17 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
         this.NUM_COLUMNS = columns;
         this.currentGrid = new boolean[rows][columns];
         this.nextGrid = new boolean[rows][columns];
+    }
+
+    public ConwaysByWikus(boolean[][] initialState) {
+        this.NUM_ROWS = initialState.length;
+        this.NUM_COLUMNS = initialState[0].length;
+        this.currentGrid = new boolean[NUM_ROWS][];
+        this.nextGrid = new boolean[NUM_ROWS][NUM_COLUMNS];
+        // Copy initial grid state
+        for (int row = 0; row < NUM_ROWS; row++) {
+            currentGrid[row] = Arrays.copyOf(initialState[row], NUM_COLUMNS);
+        }
     }
 
     // Returns true if the given cell is alive and has fewer than two live neighbours
