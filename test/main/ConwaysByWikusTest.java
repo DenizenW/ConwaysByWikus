@@ -27,4 +27,14 @@ public class ConwaysByWikusTest {
         boolean result = conways.liveCellWithTwoOrThreeLiveNeighboursLives(new Point(1, 1));
         assertEquals(true, result);
     }
+
+    @Test
+    public void testLiveCellWithMoreThanThreeLiveNeighboursDies() {
+        boolean[][] initialState = {{false, true, false},     // 0 1 0
+                                    {true, true, false},      // 1 1 0
+                                    {true, true, false}};     // 1 1 0
+        ConwaysByWikus conways = new ConwaysByWikus(initialState);
+        boolean result = conways.liveCellWithMoreThanThreeLiveNeighboursDies(new Point(1, 1));
+        assertEquals(true, result);
+    }
 }
