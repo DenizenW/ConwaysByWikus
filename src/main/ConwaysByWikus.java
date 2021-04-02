@@ -82,7 +82,19 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
 
     // Returns true if the given cell is dead and has exactly three live neighbours
     public boolean deadCellWithExactlyThreeLiveNeighboursBecomesAlive(Point point) {
-        return true;
+        if (isAlive(point)) return false;
+        int[] neighbourhood = getNeighbourhood(point);
+        int liveNeighbours = 0;
+        for (int row = neighbourhood[0]; row <= neighbourhood[1]; row++) {
+            for (int col = neighbourhood[2]; col <= neighbourhood[3]; col++) {
+                Point neighbour = new Point(row, col);
+                if (!neighbour.equals(point) && isAlive(neighbour)) {
+                    liveNeighbours++;
+                    if (liveNeighbours > 3) return false;
+                }
+            }
+        }
+        return liveNeighbours == 3;
     }
 
     private boolean isAlive(Point point) {
