@@ -120,4 +120,12 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
     public void flipCell(int row, int column) {
         currentGrid[row][column] = !currentGrid[row][column];
     }
+
+    public void setCellAlive(int row, int column) {
+        currentGrid[row][column] = true;
+    }
+
+    public void setCellDead(int row, int column) {
+        currentGrid[row][column] = false;
+    }
 }

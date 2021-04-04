@@ -2,6 +2,7 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -67,10 +68,33 @@ public class ConwayGridPanel extends JPanel {
             setStatus(isAlive);
             addMouseListener(new MouseAdapter() {
                 @Override
-                public void mouseClicked(MouseEvent mouseEvent) {
-                    conwayModel.flipCell(ROW, COLUMN);
-                    setStatus(conwayModel.isAlive(ROW, COLUMN));
+                public void mousePressed(MouseEvent e) {
+                    // Check whether Mouse1 was pressed
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        conwayModel.setCellAlive(ROW, COLUMN);
+                        setStatus(conwayModel.isAlive(ROW, COLUMN));
+                    }
                 }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    // Check whether Mouse1 is down
+                    int mouseOneDown = e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK;
+                    if (mouseOneDown == InputEvent.BUTTON1_DOWN_MASK) {
+                        conwayModel.setCellAlive(ROW, COLUMN);
+                        setStatus(conwayModel.isAlive(ROW, COLUMN));
+                    }
+                }
+
+//                @Override
+//                public void mouseExited(MouseEvent e) {
+//                    // Check whether Mouse1 is down
+//                    int mouseOneDown = e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK;
+//                    if (mouseOneDown == InputEvent.BUTTON1_DOWN_MASK) {
+//                        conwayModel.setCellDead(ROW, COLUMN);
+//                        setStatus(conwayModel.isAlive(ROW, COLUMN));
+//                    }
+//                }
             });
         }
 

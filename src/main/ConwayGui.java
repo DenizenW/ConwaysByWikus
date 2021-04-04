@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ConwayGui {
 
     ConwaysByWikus conwayModel;
-    final ScheduledExecutorService executorService;
+//    final ScheduledExecutorService executorService;
 
     ConwayGridPanel conwayGridPanel;
 //    JButton playButton = new JButton("Play");
@@ -16,7 +16,7 @@ public class ConwayGui {
 
     public ConwayGui(ConwaysByWikus conwayModel) {
         this.conwayModel = conwayModel;
-        this.executorService = Executors.newSingleThreadScheduledExecutor();
+//        this.executorService = Executors.newSingleThreadScheduledExecutor();
         this.conwayGridPanel = new ConwayGridPanel(conwayModel);
 
         JFrame frame = new JFrame("Conway's by Wikus");
