@@ -63,13 +63,7 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
                     nextGrid[row][col] = deadCellWithExactlyThreeLiveNeighboursBecomesAlive(currentPoint);
                 } else {
                     // Check if live cell survives
-                    if (liveCellWithFewerThanTwoLiveNeighboursDies(currentPoint)) {
-                        nextGrid[row][col] = false;
-                    } else if (liveCellWithTwoOrThreeLiveNeighboursLives(currentPoint)) {
-                        nextGrid[row][col] = true;
-                    } else if (liveCellWithMoreThanThreeLiveNeighboursDies(currentPoint)) {
-                        nextGrid[row][col] = false;
-                    }
+                    nextGrid[row][col] = liveCellWithTwoOrThreeLiveNeighboursLives(currentPoint);
                 }
             }
         }
