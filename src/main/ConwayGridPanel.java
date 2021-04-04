@@ -69,19 +69,30 @@ public class ConwayGridPanel extends JPanel {
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    // Check whether Mouse1 was pressed
-                    if (e.getButton() == MouseEvent.BUTTON1) {
-                        conwayModel.setCellAlive(ROW, COLUMN);
+                    // Process event if it originated from a point within this cell
+                    Point p = e.getPoint();
+                    if (contains(p.x, p.y)) {
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            conwayModel.setCellAlive(ROW, COLUMN);
+                        } else if (SwingUtilities.isRightMouseButton(e)) {
+                            conwayModel.setCellDead(ROW, COLUMN);
+                        }
                         setStatus(conwayModel.isAlive(ROW, COLUMN));
                     }
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    // Check whether Mouse1 is down
-                    int mouseOneDown = e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK;
-                    if (mouseOneDown == InputEvent.BUTTON1_DOWN_MASK) {
+                    boolean leftMouseDown = SwingUtilities.isLeftMouseButton(e);
+                    boolean rightMouseDown = SwingUtilities.isRightMouseButton(e);
+                    // Turn cell on if LMB is down but not RMB
+                    if (leftMouseDown && !rightMouseDown) {
                         conwayModel.setCellAlive(ROW, COLUMN);
+                        setStatus(conwayModel.isAlive(ROW, COLUMN));
+                    }
+                    // Turn cell off if RMB is down but not LMB
+                    if (!leftMouseDown && rightMouseDown) {
+                        conwayModel.setCellDead(ROW, COLUMN);
                         setStatus(conwayModel.isAlive(ROW, COLUMN));
                     }
                 }
