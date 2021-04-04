@@ -5,16 +5,25 @@ import java.awt.*;
 
 public class ConwayGridPanel extends JPanel {
 
+    static final Color LIVE_CELL_BACKGROUND = Color.BLACK;
+    static final Color DEAD_CELL_BACKGROUND = Color.WHITE;
+
     private int numRows;
     private int numColumns;
+    private ConwaysByWikus conwayModel;
 
-    public ConwayGridPanel(int rows, int columns) {
-        this.numRows = rows;
-        this.numColumns = columns;
+    public ConwayGridPanel(ConwaysByWikus conwayModel) {
+        this.numRows = conwayModel.NUM_ROWS;
+        this.numColumns = conwayModel.NUM_COLUMNS;
+        this.conwayModel = conwayModel;
         setLayout(new GridLayout(numRows, numColumns));
+        populate();
+    }
+
+    private void populate() {
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numColumns; col++) {
-                JPanel cellPanel = new JPanel();
+                CellPanel cellPanel = new CellPanel(conwayModel.isAlive(new Point(row, col)));
                 // Create cell borders
                 if (row < numRows - 1) {
                     if (col < numColumns - 1) {
@@ -29,9 +38,21 @@ public class ConwayGridPanel extends JPanel {
                         cellPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
                     }
                 }
-                cellPanel.setPreferredSize(new Dimension(80, 80));
                 add(cellPanel);
             }
+        }
+    }
+
+    public class CellPanel extends JPanel {
+
+        public CellPanel(boolean isAlive) {
+            if (isAlive) setBackground(LIVE_CELL_BACKGROUND);
+            else setBackground(DEAD_CELL_BACKGROUND);
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(80, 80);
         }
     }
 }

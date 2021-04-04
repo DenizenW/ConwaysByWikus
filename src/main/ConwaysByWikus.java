@@ -88,7 +88,7 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
         return liveNeighbours;
     }
 
-    private boolean isAlive(Point point) {
+    public boolean isAlive(Point point) {
         return currentGrid[point.x][point.y];
     }
 
