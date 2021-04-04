@@ -2,6 +2,8 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ConwayGridPanel extends JPanel {
 
@@ -17,7 +19,7 @@ public class ConwayGridPanel extends JPanel {
         this.numRows = conwayModel.NUM_ROWS;
         this.numColumns = conwayModel.NUM_COLUMNS;
         this.conwayModel = conwayModel;
-        this.cellPanels = new CellPanel[numRows][numColumns];
+        cellPanels = new CellPanel[numRows][numColumns];
         setLayout(new GridLayout(numRows, numColumns));
         createGridCells();
     }
@@ -25,7 +27,7 @@ public class ConwayGridPanel extends JPanel {
     private void createGridCells() {
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numColumns; col++) {
-                CellPanel cellPanel = new CellPanel(conwayModel.isAlive(new Point(row, col)));
+                CellPanel cellPanel = new CellPanel(row, col, conwayModel.isAlive(row, col));
                 // Create cell borders
                 if (row < numRows - 1) {
                     if (col < numColumns - 1) {
@@ -49,15 +51,27 @@ public class ConwayGridPanel extends JPanel {
     void updateGridCells() {
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numColumns; col++) {
-                cellPanels[row][col].setStatus(conwayModel.isAlive(new Point(row, col)));
+                cellPanels[row][col].setStatus(conwayModel.isAlive(row, col));
             }
         }
     }
 
     public class CellPanel extends JPanel {
 
-        public CellPanel(boolean isAlive) {
+        final int ROW;
+        final int COLUMN;
+
+        public CellPanel(int row, int column, boolean isAlive) {
+            ROW = row;
+            COLUMN = column;
             setStatus(isAlive);
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent mouseEvent) {
+                    conwayModel.flipCell(ROW, COLUMN);
+                    setStatus(conwayModel.isAlive(ROW, COLUMN));
+                }
+            });
         }
 
         void setStatus(boolean isAlive) {

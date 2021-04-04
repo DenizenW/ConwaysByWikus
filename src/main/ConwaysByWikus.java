@@ -88,8 +88,12 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
         return liveNeighbours;
     }
 
-    public boolean isAlive(Point point) {
+    private boolean isAlive(Point point) {
         return currentGrid[point.x][point.y];
+    }
+
+    public boolean isAlive(int row, int column) {
+        return currentGrid[row][column];
     }
 
     // Returns an array specifying the boundaries of the given point's neighbourhood
@@ -111,5 +115,9 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
             gridCopy[row] = Arrays.copyOf(grid[row], grid[row].length);
         }
         return gridCopy;
+    }
+
+    public void flipCell(int row, int column) {
+        currentGrid[row][column] = !currentGrid[row][column];
     }
 }
