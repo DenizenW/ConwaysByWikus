@@ -21,12 +21,8 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
     public ConwaysByWikus(boolean[][] initialState) {
         this.NUM_ROWS = initialState.length;
         this.NUM_COLUMNS = initialState[0].length;
-        this.currentGrid = new boolean[NUM_ROWS][];
+        this.currentGrid = copyGrid(initialState);
         this.nextGrid = new boolean[NUM_ROWS][NUM_COLUMNS];
-        // Copy initial grid state
-        for (int row = 0; row < NUM_ROWS; row++) {
-            currentGrid[row] = Arrays.copyOf(initialState[row], NUM_COLUMNS);
-        }
     }
 
     // Returns true if the given cell is alive and has fewer than two live neighbours
@@ -57,6 +53,31 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
         return liveNeighbours == 3;
     }
 
+    // Uses the update rules to compute the successor state of the grid
+    public void step() {
+        for (int row = 0; row < NUM_ROWS; row++) {
+            for (int col = 0; col < NUM_COLUMNS; col++) {
+                Point currentPoint = new Point(row, col);
+                if (!currentGrid[row][col]) {
+                    // Check if dead cell becomes alive
+                    nextGrid[row][col] = deadCellWithExactlyThreeLiveNeighboursBecomesAlive(currentPoint);
+                } else {
+                    // Check if live cell survives
+                    if (liveCellWithFewerThanTwoLiveNeighboursDies(currentPoint)) {
+                        nextGrid[row][col] = false;
+                    } else if (liveCellWithTwoOrThreeLiveNeighboursLives(currentPoint)) {
+                        nextGrid[row][col] = true;
+                    } else if (liveCellWithMoreThanThreeLiveNeighboursDies(currentPoint)) {
+                        nextGrid[row][col] = false;
+                    }
+                }
+            }
+        }
+        boolean[][] temp = currentGrid;
+        currentGrid = nextGrid;
+        nextGrid = temp;
+    }
+
     // Returns the number of live neighbours for the given point, or cutoff if cutoff is reached
     private int countLiveNeighbours(Point point, int cutoff) {
         int liveNeighbours = 0;
@@ -84,5 +105,17 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
         int xMax = Math.min(NUM_ROWS - 1, point.x + 1);
         int yMax = Math.min(NUM_COLUMNS - 1, point.y + 1);
         return new int[] {xMin, xMax, yMin, yMax};
+    }
+
+    public boolean[][] getCurrentGrid() {
+        return copyGrid(currentGrid);
+    }
+
+    private boolean[][] copyGrid(boolean[][] grid) {
+        boolean[][] gridCopy = new boolean[grid.length][grid[0].length];
+        for (int row = 0; row < grid.length; row++) {
+            gridCopy[row] = Arrays.copyOf(grid[row], grid[row].length);
+        }
+        return gridCopy;
     }
 }

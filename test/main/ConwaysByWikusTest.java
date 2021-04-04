@@ -1,7 +1,6 @@
 package main;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.awt.*;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConwaysByWikusTest {
@@ -81,6 +81,34 @@ public class ConwaysByWikusTest {
                 Arguments.of(new Point(2, 2), false), // dead cell with <3 neighbours
                 Arguments.of(new Point(0, 0), true),  // dead cell with 3 neighbours
                 Arguments.of(new Point(1, 2), false)  // dead cell with >3 neighbours
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("sourceStep")
+    public void testStep(ConwaysByWikus initialState, boolean[][] expected) {
+        initialState.step();
+        boolean[][] newState = initialState.getCurrentGrid();
+        for (int i = 0; i < expected.length; i++) {
+            assertArrayEquals(expected[i], newState[i]);
+        }
+    }
+
+    private static Stream<Arguments> sourceStep() {
+        ConwaysByWikus conways1 = new ConwaysByWikus(2, 3);
+        boolean[][] expected1 = {{false, false, false}, {false, false, false}};
+
+        boolean[][] initial2 = {{false, true, false, true},      // 0 1 0 1
+                                {true, true, false, false},      // 1 1 0 0
+                                {true, true, false, false}};     // 1 1 0 0
+        ConwaysByWikus conways2 = new ConwaysByWikus(initial2);
+        boolean[][] expected2 = {{true, true, true, false},      // 1 1 1 0
+                                 {false, false, false, false},   // 0 0 0 0
+                                 {true, true, false, false}};    // 1 1 0 0
+
+        return Stream.of(
+                Arguments.of(conways1, expected1),   // empty grid
+                Arguments.of(conways2, expected2)
         );
     }
 }
