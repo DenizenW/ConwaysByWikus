@@ -1,6 +1,7 @@
 package main;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -8,8 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.awt.*;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConwaysByWikusTest {
     private static ConwaysByWikus conways;
@@ -86,16 +86,16 @@ public class ConwaysByWikusTest {
     }
 
     @ParameterizedTest
-    @MethodSource("sourceStep")
-    public void testStep(ConwaysByWikus initialState, boolean[][] expected) {
-        initialState.step();
+    @MethodSource("sourceUpdateGridState")
+    public void testUpdateGridState(ConwaysByWikus initialState, boolean[][] expected) {
+        initialState.updateGridState();
         boolean[][] newState = initialState.getCurrentGrid();
         for (int i = 0; i < expected.length; i++) {
             assertArrayEquals(expected[i], newState[i]);
         }
     }
 
-    private static Stream<Arguments> sourceStep() {
+    private static Stream<Arguments> sourceUpdateGridState() {
         ConwaysByWikus conways1 = new ConwaysByWikus(2, 3);
         boolean[][] expected1 = {{false, false, false}, {false, false, false}};
 
@@ -120,5 +120,28 @@ public class ConwaysByWikusTest {
                 Arguments.of(conways2, expected2),
                 Arguments.of(conways3, expected3)
         );
+    }
+
+    @Test
+    public void testSetCellState() {
+        ConwaysByWikus conway = new ConwaysByWikus(3, 3);
+        conway.setCellState(0, 0, true);
+        assertTrue(conway.isAlive(0, 0));
+    }
+
+    @Test
+    public void testClearGrid() {
+        boolean[][] initial = {{true, true, true},
+                               {true, true, true},
+                               {true, true, true}};
+        ConwaysByWikus conway = new ConwaysByWikus(initial);
+        conway.clearGrid();
+        boolean[][] newState = conway.getCurrentGrid();
+        boolean[][] expected = {{false, false, false},
+                                {false, false, false},
+                                {false, false, false}};
+        for (int i = 0; i < expected.length; i++) {
+            assertArrayEquals(expected[i], newState[i]);
+        }
     }
 }
