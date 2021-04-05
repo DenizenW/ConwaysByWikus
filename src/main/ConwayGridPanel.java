@@ -57,6 +57,11 @@ public class ConwayGridPanel extends JPanel {
         }
     }
 
+    void clearGrid() {
+        conwayModel.clearGrid();
+        updateGridCells();
+    }
+
     public class CellPanel extends JPanel {
 
         final int ROW;
@@ -74,9 +79,9 @@ public class ConwayGridPanel extends JPanel {
                         Point p = e.getPoint();
                         if (contains(p.x, p.y)) {
                             if (SwingUtilities.isLeftMouseButton(e)) {
-                                conwayModel.setCellAlive(ROW, COLUMN);
+                                conwayModel.setCellState(ROW, COLUMN, true);
                             } else if (SwingUtilities.isRightMouseButton(e)) {
-                                conwayModel.setCellDead(ROW, COLUMN);
+                                conwayModel.setCellState(ROW, COLUMN, false);
                             }
                             setStatus(conwayModel.isAlive(ROW, COLUMN));
                         }
@@ -90,12 +95,12 @@ public class ConwayGridPanel extends JPanel {
                         boolean rightMouseDown = SwingUtilities.isRightMouseButton(e);
                         // Turn cell on if LMB is down but not RMB
                         if (leftMouseDown && !rightMouseDown) {
-                            conwayModel.setCellAlive(ROW, COLUMN);
+                            conwayModel.setCellState(ROW, COLUMN, true);
                             setStatus(conwayModel.isAlive(ROW, COLUMN));
                         }
                         // Turn cell off if RMB is down but not LMB
                         if (!leftMouseDown && rightMouseDown) {
-                            conwayModel.setCellDead(ROW, COLUMN);
+                            conwayModel.setCellState(ROW, COLUMN, false);
                             setStatus(conwayModel.isAlive(ROW, COLUMN));
                         }
                     }

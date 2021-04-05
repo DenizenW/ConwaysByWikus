@@ -109,11 +109,15 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
         return gridCopy;
     }
 
-    public void setCellAlive(int row, int column) {
-        currentGrid[row][column] = true;
+    public void setCellState(int row, int column, boolean state) {
+        currentGrid[row][column] = state;
     }
 
-    public void setCellDead(int row, int column) {
-        currentGrid[row][column] = false;
+    public void clearGrid() {
+        for (int row = 0; row < NUM_ROWS; row++) {
+            for (int col = 0; col < NUM_COLUMNS; col++) {
+                currentGrid[row][col] = false;
+            }
+        }
     }
 }
