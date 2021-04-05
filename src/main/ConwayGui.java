@@ -2,21 +2,28 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class ConwayGui {
 
     ConwaysByWikus conwayModel;
-//    final ScheduledExecutorService executorService;
+    final ScheduledExecutorService executor;
+    ScheduledFuture<?> scheduledFuture;
 
     ConwayGridPanel conwayGridPanel;
-//    JButton playButton = new JButton("Play");
+    JButton playButton = new JButton("Play");
     JButton nextButton = new JButton("Next");
+
+    boolean paused = true;
 
     public ConwayGui(ConwaysByWikus conwayModel) {
         this.conwayModel = conwayModel;
-//        this.executorService = Executors.newSingleThreadScheduledExecutor();
+        this.executor = Executors.newSingleThreadScheduledExecutor();
         this.conwayGridPanel = new ConwayGridPanel(conwayModel);
 
         JFrame frame = new JFrame("Conway's by Wikus");
@@ -35,6 +42,20 @@ public class ConwayGui {
         constraints.gridwidth = 1;
         frame.add(nextButton, constraints);
         nextButton.addActionListener(actionEvent -> simulationStep());
+        // Add play button
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        frame.add(playButton, constraints);
+        playButton.addActionListener(actionEvent -> {
+            if (paused) {
+                nextButton.setEnabled(false);
+                scheduledFuture = executor.scheduleWithFixedDelay(ConwayGui.this::simulationStep, 0, 750, TimeUnit.MILLISECONDS);
+            } else {
+                scheduledFuture.cancel(false);
+                nextButton.setEnabled(true);
+            }
+            paused = !paused;
+        });
 
         frame.pack();
         frame.setLocationByPlatform(true);
