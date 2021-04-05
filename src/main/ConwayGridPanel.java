@@ -14,6 +14,7 @@ public class ConwayGridPanel extends JPanel {
     private int numColumns;
     private ConwaysByWikus conwayModel;
     CellPanel[][] cellPanels;
+    boolean processMouseEvents = true;
 
     public ConwayGridPanel(ConwaysByWikus conwayModel) {
         this.numRows = conwayModel.NUM_ROWS;
@@ -27,7 +28,7 @@ public class ConwayGridPanel extends JPanel {
     private void createGridCells() {
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numColumns; col++) {
-                CellPanel cellPanel = new CellPanel(row, col, conwayModel.isAlive(row, col));
+                CellPanel cellPanel = new CellPanel(row, col, conwayModel.isAlive(row, col), this);
                 // Create cell borders
                 if (row < numRows - 1) {
                     if (col < numColumns - 1) {
@@ -61,38 +62,42 @@ public class ConwayGridPanel extends JPanel {
         final int ROW;
         final int COLUMN;
 
-        public CellPanel(int row, int column, boolean isAlive) {
+        public CellPanel(int row, int column, boolean isAlive, ConwayGridPanel gridPanel) {
             ROW = row;
             COLUMN = column;
             setStatus(isAlive);
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    // Process event if it originated from a point within this cell
-                    Point p = e.getPoint();
-                    if (contains(p.x, p.y)) {
-                        if (SwingUtilities.isLeftMouseButton(e)) {
-                            conwayModel.setCellAlive(ROW, COLUMN);
-                        } else if (SwingUtilities.isRightMouseButton(e)) {
-                            conwayModel.setCellDead(ROW, COLUMN);
+                    if (gridPanel.processMouseEvents) {
+                        // Process event if it originated from a point within this cell
+                        Point p = e.getPoint();
+                        if (contains(p.x, p.y)) {
+                            if (SwingUtilities.isLeftMouseButton(e)) {
+                                conwayModel.setCellAlive(ROW, COLUMN);
+                            } else if (SwingUtilities.isRightMouseButton(e)) {
+                                conwayModel.setCellDead(ROW, COLUMN);
+                            }
+                            setStatus(conwayModel.isAlive(ROW, COLUMN));
                         }
-                        setStatus(conwayModel.isAlive(ROW, COLUMN));
                     }
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    boolean leftMouseDown = SwingUtilities.isLeftMouseButton(e);
-                    boolean rightMouseDown = SwingUtilities.isRightMouseButton(e);
-                    // Turn cell on if LMB is down but not RMB
-                    if (leftMouseDown && !rightMouseDown) {
-                        conwayModel.setCellAlive(ROW, COLUMN);
-                        setStatus(conwayModel.isAlive(ROW, COLUMN));
-                    }
-                    // Turn cell off if RMB is down but not LMB
-                    if (!leftMouseDown && rightMouseDown) {
-                        conwayModel.setCellDead(ROW, COLUMN);
-                        setStatus(conwayModel.isAlive(ROW, COLUMN));
+                    if (gridPanel.processMouseEvents) {
+                        boolean leftMouseDown = SwingUtilities.isLeftMouseButton(e);
+                        boolean rightMouseDown = SwingUtilities.isRightMouseButton(e);
+                        // Turn cell on if LMB is down but not RMB
+                        if (leftMouseDown && !rightMouseDown) {
+                            conwayModel.setCellAlive(ROW, COLUMN);
+                            setStatus(conwayModel.isAlive(ROW, COLUMN));
+                        }
+                        // Turn cell off if RMB is down but not LMB
+                        if (!leftMouseDown && rightMouseDown) {
+                            conwayModel.setCellDead(ROW, COLUMN);
+                            setStatus(conwayModel.isAlive(ROW, COLUMN));
+                        }
                     }
                 }
             });

@@ -49,10 +49,12 @@ public class ConwayGui {
         playButton.addActionListener(actionEvent -> {
             if (paused) {
                 nextButton.setEnabled(false);
+                conwayGridPanel.processMouseEvents = false;
                 scheduledFuture = executor.scheduleWithFixedDelay(ConwayGui.this::simulationStep, 0, 750, TimeUnit.MILLISECONDS);
             } else {
                 scheduledFuture.cancel(false);
                 nextButton.setEnabled(true);
+                conwayGridPanel.processMouseEvents = true;
             }
             paused = !paused;
         });
