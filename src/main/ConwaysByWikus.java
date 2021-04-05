@@ -75,10 +75,11 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
     // Returns the number of live neighbours for the given point, or cutoff if cutoff is reached
     private int countLiveNeighbours(Point point, int cutoff) {
         int liveNeighbours = 0;
-        int[] neighbourhood = getNeighbourhood(point);
-        for (int row = neighbourhood[0]; row <= neighbourhood[1]; row++) {
-            for (int col = neighbourhood[2]; col <= neighbourhood[3]; col++) {
-                Point neighbour = new Point(row, col);
+        for (int row = point.x - 1; row <= point.x + 1; row++) {
+            for (int col = point.y - 1; col <= point.y + 1; col++) {
+                int wrappedRow = (row + NUM_ROWS) % NUM_ROWS;
+                int wrappedCol = (col + NUM_COLUMNS) % NUM_COLUMNS;
+                Point neighbour = new Point(wrappedRow, wrappedCol);
                 if (!neighbour.equals(point) && isAlive(neighbour)) {
                     liveNeighbours++;
                     if (liveNeighbours >= cutoff) return cutoff;
@@ -96,15 +97,6 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
         return currentGrid[row][column];
     }
 
-    // Returns an array specifying the boundaries of the given point's neighbourhood
-    private int[] getNeighbourhood(Point point) {
-        int xMin = Math.max(0, point.x - 1);
-        int yMin = Math.max(0, point.y - 1);
-        int xMax = Math.min(NUM_ROWS - 1, point.x + 1);
-        int yMax = Math.min(NUM_COLUMNS - 1, point.y + 1);
-        return new int[] {xMin, xMax, yMin, yMax};
-    }
-
     public boolean[][] getCurrentGrid() {
         return copyGrid(currentGrid);
     }
@@ -115,10 +107,6 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
             gridCopy[row] = Arrays.copyOf(grid[row], grid[row].length);
         }
         return gridCopy;
-    }
-
-    public void flipCell(int row, int column) {
-        currentGrid[row][column] = !currentGrid[row][column];
     }
 
     public void setCellAlive(int row, int column) {

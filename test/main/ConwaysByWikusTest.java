@@ -79,7 +79,8 @@ public class ConwaysByWikusTest {
         return Stream.of(
                 Arguments.of(new Point(2, 0), false), // live cell
                 Arguments.of(new Point(2, 2), false), // dead cell with <3 neighbours
-                Arguments.of(new Point(0, 0), true),  // dead cell with 3 neighbours
+                Arguments.of(new Point(0, 2), true),  // dead cell with 3 neighbours
+                Arguments.of(new Point(0, 0), false), // dead cell with >3 neighbours
                 Arguments.of(new Point(1, 2), false)  // dead cell with >3 neighbours
         );
     }
@@ -102,13 +103,22 @@ public class ConwaysByWikusTest {
                                 {true, true, false, false},      // 1 1 0 0
                                 {true, true, false, false}};     // 1 1 0 0
         ConwaysByWikus conways2 = new ConwaysByWikus(initial2);
-        boolean[][] expected2 = {{true, true, true, false},      // 1 1 1 0
-                                 {false, false, false, false},   // 0 0 0 0
-                                 {true, true, false, false}};    // 1 1 0 0
+        boolean[][] expected2 = {{false, false, false, true},    // 0 0 0 1
+                                 {false, false, false, true},    // 0 0 0 1
+                                 {false, false, false, true}};   // 0 0 0 1
+
+        boolean[][] initial3 = {{true, false, false, true},      // 1 0 0 1
+                                {false, true, true, false},      // 0 1 1 0
+                                {true, false, true, false}};     // 1 0 1 0
+        ConwaysByWikus conways3 = new ConwaysByWikus(initial3);
+        boolean[][] expected3 = {{true, false, false, false},    // 1 0 0 0
+                                 {false, false, true, false},    // 0 0 1 0
+                                 {true, false, true, false}};    // 1 0 1 0
 
         return Stream.of(
                 Arguments.of(conways1, expected1),   // empty grid
-                Arguments.of(conways2, expected2)
+                Arguments.of(conways2, expected2),
+                Arguments.of(conways3, expected3)
         );
     }
 }
