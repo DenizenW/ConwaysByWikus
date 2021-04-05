@@ -11,7 +11,6 @@ public class ConwayGui {
 
     final ScheduledExecutorService executor;
     ScheduledFuture<?> scheduledFuture;
-    ConwaysByWikus conwayModel;
 
     JFrame frame;
     ConwayGridPanel conwayGridPanel;
@@ -23,14 +22,13 @@ public class ConwayGui {
     boolean paused = true;
 
     public ConwayGui(ConwaysByWikus conwayModel) {
-        this.conwayModel = conwayModel;
         executor = Executors.newSingleThreadScheduledExecutor();
-        createGui();
+        createGui(conwayModel);
     }
 
-    private void createGui() {
+    private void createGui(ConwaysByWikus conwayModel) {
         createFrame();
-        createGrid();
+        createGrid(conwayModel);
         createButtons();
         frame.pack();
         frame.setLocationByPlatform(true);
@@ -43,7 +41,7 @@ public class ConwayGui {
         frame.setLayout(new GridBagLayout());
     }
 
-    private void createGrid() {
+    private void createGrid(ConwaysByWikus conwayModel) {
         conwayGridPanel = new ConwayGridPanel(conwayModel);
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -65,7 +63,7 @@ public class ConwayGui {
                 clearButton.setEnabled(false);
                 newGridButton.setEnabled(false);
                 conwayGridPanel.processMouseEvents = false;
-                scheduledFuture = executor.scheduleWithFixedDelay(ConwayGui.this::simulationStep, 0, 500,
+                scheduledFuture = executor.scheduleWithFixedDelay(conwayGridPanel::showNextStep, 0, 500,
                         TimeUnit.MILLISECONDS);
             } else {
                 scheduledFuture.cancel(false);
@@ -81,7 +79,7 @@ public class ConwayGui {
         constraints.gridx = 1;
         constraints.gridy = 1;
         frame.add(nextButton, constraints);
-        nextButton.addActionListener(actionEvent -> simulationStep());
+        nextButton.addActionListener(actionEvent -> conwayGridPanel.showNextStep());
         // Add clear button
         constraints.gridx = 2;
         constraints.gridy = 1;
@@ -91,11 +89,21 @@ public class ConwayGui {
         constraints.gridx = 3;
         constraints.gridy = 1;
         frame.add(newGridButton, constraints);
-//        newGridButton.addActionListener(actionEvent -> conwayGridPanel.clearGrid());
+        newGridButton.addActionListener(actionEvent -> showNewGridDialog());
     }
 
-    private void simulationStep() {
-        conwayModel.step();
-        conwayGridPanel.updateGridCells();
+    private void showNewGridDialog() {
+        JSpinner rowSpinner = new JSpinner(new SpinnerNumberModel(3, 3, 50, 1));
+        JSpinner columnSpinner = new JSpinner(new SpinnerNumberModel(3, 3, 50, 1));
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(new JLabel("Rows:"));
+        panel.add(rowSpinner);
+        panel.add(new JLabel("Columns:"));
+        panel.add(columnSpinner);
+        int result = JOptionPane.showConfirmDialog(null, panel, "Create Grid",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            conwayGridPanel.changeConwayModel((int) rowSpinner.getValue(), (int) columnSpinner.getValue());
+        }
     }
 }
