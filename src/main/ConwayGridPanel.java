@@ -22,7 +22,7 @@ public class ConwayGridPanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(800, 800);
+        return new Dimension(600, 600);
     }
 
     private void createGridCells() {
@@ -51,7 +51,7 @@ public class ConwayGridPanel extends JPanel {
     }
 
     void showNextStep() {
-        conwayModel.step();
+        conwayModel.updateGridState();
         updateGridCells();
     }
 

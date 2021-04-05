@@ -47,12 +47,17 @@ public class ConwayGui {
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
         frame.add(conwayGridPanel, constraints);
     }
 
     private void createButtons() {
         GridBagConstraints constraints = new GridBagConstraints();
         // Add play button
+        constraints.weightx = 1.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 1;
         frame.add(playButton, constraints);

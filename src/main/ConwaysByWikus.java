@@ -54,7 +54,7 @@ public class ConwaysByWikus implements ConwaysGameOfLife {
     }
 
     // Uses the update rules to compute the successor state of the grid
-    public void step() {
+    public void updateGridState() {
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLUMNS; col++) {
                 Point currentPoint = new Point(row, col);
