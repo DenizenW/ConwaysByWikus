@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ConwayGui {
 
+    final int MIN_GRID_SIZE = 3;
+    final int MAX_GRID_SIZE = 50;
     final ScheduledExecutorService executor;
     ScheduledFuture<?> scheduledFuture;
 
@@ -98,8 +100,8 @@ public class ConwayGui {
     }
 
     private void showNewGridDialog() {
-        JSpinner rowSpinner = new JSpinner(new SpinnerNumberModel(3, 3, 50, 1));
-        JSpinner columnSpinner = new JSpinner(new SpinnerNumberModel(3, 3, 50, 1));
+        JSpinner rowSpinner = new JSpinner(new SpinnerNumberModel(3, MIN_GRID_SIZE, MAX_GRID_SIZE, 1));
+        JSpinner columnSpinner = new JSpinner(new SpinnerNumberModel(3, MIN_GRID_SIZE, MAX_GRID_SIZE, 1));
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(new JLabel("Rows:"));
         panel.add(rowSpinner);
